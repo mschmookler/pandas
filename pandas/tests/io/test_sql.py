@@ -754,9 +754,26 @@ class _TestSQLApi(PandasSQLTest):
 
         assert num_rows == num_entries
 
+    def test_to_sql_append_only(self):
+        assert not sql.has_table("test_frame5", self.conn)
+        
+        msg = "Table 'test_frame5' does not exist"
+        with pytest.raises(ValueError, match=msg):
+            sql.to_sql(
+                self.test_frame1, "test_frame5", self.conn, if_exists="append_only"
+            )
+
+        sql.to_sql(self.test_frame1, "test_frame5", self.conn, if_exists="fail")
+        sql.to_sql(self.test_frame1, "test_frame5", self.conn, if_exists="append_only")
+
+        num_entries = 2 * len(self.test_frame1)
+        num_rows = self._count_rows("test_frame5")
+
+        assert num_rows == num_entries
+
     def test_to_sql_type_mapping(self):
-        sql.to_sql(self.test_frame3, "test_frame5", self.conn, index=False)
-        result = sql.read_sql("SELECT * FROM test_frame5", self.conn)
+        sql.to_sql(self.test_frame3, "test_frame6", self.conn, index=False)
+        result = sql.read_sql("SELECT * FROM test_frame6", self.conn)
 
         tm.assert_frame_equal(self.test_frame3, result)
 
