@@ -665,10 +665,11 @@ def to_sql(
     schema : str, optional
         Name of SQL schema in database to write to (if database flavor
         supports this). If None, use default schema (default).
-    if_exists : {'fail', 'replace', 'append'}, default 'fail'
+    if_exists : {'fail', 'replace', 'append', 'append_only'}, default 'fail'
         - fail: If table exists, do nothing.
         - replace: If table exists, drop it, recreate it, and insert data.
         - append: If table exists, insert data. Create if does not exist.
+        - append_only: If table exists, insert data. Fail if does not exist.
     index : bool, default True
         Write DataFrame index as a column.
     index_label : str or sequence, optional
@@ -705,7 +706,7 @@ def to_sql(
     **engine_kwargs
         Any additional kwargs are passed to the engine.
     """
-    if if_exists not in ("fail", "replace", "append"):
+    if if_exists not in ("fail", "replace", "append", "append_only"):
         raise ValueError(f"'{if_exists}' is not valid for if_exists")
 
     pandas_sql = pandasSQL_builder(con, schema=schema)
@@ -1709,10 +1710,11 @@ class SQLDatabase(PandasSQL):
         frame : DataFrame
         name : string
             Name of SQL table.
-        if_exists : {'fail', 'replace', 'append'}, default 'fail'
+        if_exists : {'fail', 'replace', 'append', 'append_only'}, default 'fail'
             - fail: If table exists, do nothing.
             - replace: If table exists, drop it, recreate it, and insert data.
             - append: If table exists, insert data. Create if does not exist.
+            - append_only: If table exists, insert data. Fail if does not exist.
         index : boolean, default True
             Write DataFrame index as a column.
         index_label : string or sequence, default None
@@ -2173,10 +2175,11 @@ class SQLiteDatabase(PandasSQL):
         frame: DataFrame
         name: string
             Name of SQL table.
-        if_exists: {'fail', 'replace', 'append'}, default 'fail'
+        if_exists: {'fail', 'replace', 'append', 'append_only'}, default 'fail'
             fail: If table exists, do nothing.
             replace: If table exists, drop it, recreate it, and insert data.
             append: If table exists, insert data. Create if it does not exist.
+            append_only: If table exists, insert data. Fail if does not exist.
         index : bool, default True
             Write DataFrame index as a column
         index_label : string or sequence, default None
