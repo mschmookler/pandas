@@ -1531,6 +1531,9 @@ class _TestSQLAlchemy(SQLAlchemyMixIn, PandasSQLTest):
     def test_to_sql_append(self):
         self._to_sql_append()
 
+    def test_to_sql_append_only(self):
+        self._to_sql_append_only()
+
     def test_to_sql_method_multi(self):
         self._to_sql(method="multi")
 
