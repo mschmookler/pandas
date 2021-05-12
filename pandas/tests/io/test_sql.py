@@ -557,6 +557,27 @@ class PandasSQLTest:
         assert num_rows == num_entries
         self.drop_table("test_frame1")
 
+    def _to_sql_append_only(self):
+        self.drop_table("test_frame1")
+    
+        msg = "Table 'test_frame1' does not exist"
+        with pytest.raises(ValueError, match=msg):
+            self.pandasSQL.to_sql(
+                self.test_frame1, "test_frame1", if_exists="append_only"
+            )
+    
+        self.pandasSQL.to_sql(self.test_frame1, "test_frame1", if_exists="fail")
+        self.pandasSQL.to_sql(
+                self.test_frame1, "test_frame1", if_exists="append_only"
+        )
+        assert self.pandasSQL.has_table("test_frame1")
+    
+        num_entries = 2 * len(self.test_frame1)
+        num_rows = self._count_rows("test_frame1")
+    
+        assert num_rows == num_entries
+        self.drop_table("test_frame1")
+
     def _to_sql_method_callable(self):
         check = []  # used to double check function below is really being used
 
