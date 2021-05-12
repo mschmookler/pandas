@@ -863,12 +863,15 @@ class SQLTable(PandasObject):
             elif self.if_exists == "replace":
                 self.pd_sql.drop_table(self.name, self.schema)
                 self._execute_create()
-            elif self.if_exists == "append":
+            elif self.if_exists == "append" or self.if_exists == "append_only":
                 pass
             else:
                 raise ValueError(f"'{self.if_exists}' is not valid for if_exists")
         else:
-            self._execute_create()
+            if self.if_exists == "append_only":
+                raise ValueError(f"Table '{self.name}' does not exist")
+            else:
+                self._execute_create()
 
     def _execute_insert(self, conn, keys: list[str], data_iter):
         """
